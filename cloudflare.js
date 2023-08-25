@@ -19,6 +19,16 @@ async function getExistingRecordIdForDiscordUser(user) {
 }
 
 /**
+ * @param {string} content
+ */
+async function hasExistingRecordIdForContent(content) {
+    const existingRecordsResponse = await cf.dnsRecords.browse(cloudflare.zoneId, { type: 'TXT', name: underscoreDiscordDomain, content });
+    if (!existingRecordsResponse.success) throw new Error('Cloudflare API Error');
+
+    return existingRecordsResponse.result.length > 0;
+}
+
+/**
  * @param {string} recordId
  */
 async function deleteTxtRecord(recordId) {
@@ -38,4 +48,4 @@ async function addTxtRecordForUser(user, txtRecordContent) {
     });
 }
 
-module.exports = { getExistingRecordIdForDiscordUser, deleteTxtRecord, addTxtRecordForUser }
+module.exports = { getExistingRecordIdForDiscordUser, hasExistingRecordIdForContent, deleteTxtRecord, addTxtRecordForUser }

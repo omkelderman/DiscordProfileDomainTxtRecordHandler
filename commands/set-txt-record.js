@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, ChatInputCommandInteraction } = require('discord.js');
-const { getExistingRecordIdForDiscordUser, addTxtRecordForUser } = require('../cloudflare');
+const { getExistingRecordIdForDiscordUser, addTxtRecordForUser, hasExistingRecordIdForContent } = require('../cloudflare');
 const { underscoreDiscordDomain } = require('../globalConstants');
 
 module.exports = {
@@ -19,20 +19,28 @@ module.exports = {
      * @param {ChatInputCommandInteraction} interaction 
      */
     async exec(interaction) {
-        const recordId = interaction.options.getString('txt-record');
-        if (!recordId) {
+        const txtRecord = interaction.options.getString('txt-record');
+        if (!txtRecord) {
             await interaction.reply('Error: no txt record given :(');
             return;
         }
 
-        const hasRecord = await getExistingRecordIdForDiscordUser(interaction.user);
-        if (hasRecord) {
+        const recordId = await getExistingRecordIdForDiscordUser(interaction.user);
+        if (recordId) {
+            console.log(`user ${interaction.user.tag} requested TXT record ${txtRecord} but already has one, so denied`)
             interaction.reply('You already have a TXT record, you can remove it with /del-txt-record');
             return;
         }
 
-        await addTxtRecordForUser(interaction.user, recordId);
+        if(await hasExistingRecordIdForContent(txtRecord)) {
+            console.log(`user ${interaction.user.tag} requested TXT record ${txtRecord} but a TXT record with that content already exists`)
+            interaction.reply('Unable to add TXT record, one with that content already exists, but is not registered to you?');
+            return;
+        }
 
+        await addTxtRecordForUser(interaction.user, txtRecord);
+
+        console.log(`TXT record '${txtRecord}' added for user ${interaction.user.tag}`)
         await interaction.reply('Done!');
     }
 };

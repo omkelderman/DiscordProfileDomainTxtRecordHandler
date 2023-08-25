@@ -15,12 +15,14 @@ module.exports = {
     async exec(interaction) {
         const recordId = await getExistingRecordIdForDiscordUser(interaction.user);
         if (!recordId) {
+            console.log(`user ${interaction.user.tag} requested TXT record removal, but didnt have any`)
             interaction.reply('You do not have a TXT record added by this bot');
             return;
         }
 
         await deleteTxtRecord(recordId);
 
+        console.log(`TXT record for user ${interaction.user.tag} deleted`)
         await interaction.reply('Done!');
     }
 };
