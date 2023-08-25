@@ -1,0 +1,12 @@
+{
+    "discord": {
+        "token": "discord bot token",
+        "applicationId": "discord application id",
+        "guildId": "discord guid id this bot is active in"
+    },
+    "cloudflare": {
+        "token": "cloudflare bot token that has permission to edit dns",
+        "zoneId": "cloudflare zone id of the domain",
+        "domain": "the domain we're managing"
+    }
+}

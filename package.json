@@ -1,0 +1,8 @@
+{
+    "name": "discord-profile-domain-txt-record-handler",
+    "private": true,
+    "dependencies": {
+        "cloudflare": "^2.9.1",
+        "discord.js": "^14.13.0"
+    }
+}
